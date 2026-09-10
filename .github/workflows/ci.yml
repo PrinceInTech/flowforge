@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.23.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @flowforge/shared build
+
+      - name: Build engine package
+        run: pnpm --filter @flowforge/engine build
+
+      - name: Typecheck
+        run: pnpm -r typecheck
+
+      - name: Lint
+        run: pnpm -r lint
+
+      - name: Unit tests
+        run: pnpm -r test
+
+      - name: Build apps
+        run: pnpm --filter @flowforge/api build && pnpm --filter @flowforge/worker build && pnpm --filter @flowforge/web build
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: flowforge
+          POSTGRES_PASSWORD: flowforge
+          POSTGRES_DB: flowforge
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U flowforge -d flowforge"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://flowforge:flowforge@localhost:5432/flowforge
+      REDIS_URL: redis://localhost:6379
+      JWT_ACCESS_SECRET: ci-access-secret
+      JWT_REFRESH_SECRET: ci-refresh-secret
+      PORT: 3000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.23.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @flowforge/shared build
+
+      - name: Build engine package
+        run: pnpm --filter @flowforge/engine build
+
+      - name: Build api and worker
+        run: pnpm --filter @flowforge/api build && pnpm --filter @flowforge/worker build
+
+      - name: Run database migrations
+        run: pnpm migrate
+
+      - name: Start worker
+        run: nohup node apps/worker/dist/index.js > worker.log 2>&1 &
+
+      - name: Run end-to-end tests
+        run: pnpm test:e2e
+
+      - name: Upload worker log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-log
+          path: worker.log

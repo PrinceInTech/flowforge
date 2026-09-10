@@ -1,0 +1,28 @@
+{
+  "name": "flowforge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-tenant workflow and asynchronous job orchestration platform",
+  "license": "MIT",
+  "packageManager": "pnpm@10.23.0",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @flowforge/api dev\" \"pnpm --filter @flowforge/worker dev\" \"pnpm --filter @flowforge/web dev\"",
+    "build": "pnpm --filter @flowforge/shared build && pnpm --filter @flowforge/engine build && pnpm --filter @flowforge/api build && pnpm --filter @flowforge/worker build && pnpm --filter @flowforge/web build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @flowforge/api test:e2e",
+    "migrate": "pnpm --filter @flowforge/api migrate",
+    "seed": "pnpm --filter @flowforge/api seed",
+    "format": "prettier --write \"apps/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.15.0"
+  }
+}

@@ -1,0 +1,15 @@
+module.exports = {
+  moduleFileExtensions: ["js", "json", "ts"],
+  rootDir: "src",
+  testRegex: ".*\\.unit\\.test\\.ts$",
+  transform: {
+    "^.+\\.(t|j)s$": ["ts-jest", { tsconfig: "tsconfig.json" }],
+  },
+  collectCoverageFrom: ["**/*.service.ts", "**/*.guard.ts"],
+  coverageDirectory: "../coverage",
+  testEnvironment: "node",
+  moduleNameMapper: {
+    "^@flowforge/shared$": "<rootDir>/../../../packages/shared/src",
+    "^@flowforge/engine$": "<rootDir>/../../../packages/engine/src",
+  },
+};
