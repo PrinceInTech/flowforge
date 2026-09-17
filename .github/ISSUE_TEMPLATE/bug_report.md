@@ -42,4 +42,4 @@ If applicable, add screenshots or sanitized log output to help explain the probl
 Anything else that might be relevant.
 
 > Note: do **not** report security vulnerabilities here — use the process in
-> [SECURITY.md](../SECURITY.md).
+> [SECURITY.md](https://github.com/PrinceInTech/flowforge/blob/main/SECURITY.md).

@@ -8,13 +8,7 @@ worker processes.
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Node](https://img.shields.io/badge/node-%E2%89%A520-green)
 ![pnpm](https://img.shields.io/badge/pnpm-10.23.0-orange)
-
-> **CI status badge** — add this after the GitHub repository is created by
-> uncommenting it with your `<owner>/flowforge` path:
->
-> ```markdown
-> [![CI](https://github.com/<owner>/flowforge/actions/workflows/ci.yml/badge.svg)](https://github.com/<owner>/flowforge/actions/workflows/ci.yml)
-> ```
+[![CI](https://github.com/PrinceInTech/flowforge/actions/workflows/ci.yml/badge.svg)](https://github.com/PrinceInTech/flowforge/actions/workflows/ci.yml)
 
 ---
 
@@ -146,7 +140,7 @@ step is ever lost and every transition is inspectable.
 ### 1. Clone and install
 
 ```bash
-git clone <your-github-url>/flowforge.git   # replace with the repository URL
+git clone https://github.com/PrinceInTech/flowforge.git
 cd flowforge
 corepack enable
 pnpm install --frozen-lockfile
